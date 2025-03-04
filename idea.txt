@@ -1,0 +1,113 @@
+✅ Verzeichnis-Auswahl mit integriertem Datei-Explorer
+✅ Fortschrittsanzeige für große Scans
+✅ Liste der Duplikate mit Optionen zum Löschen, Verschieben oder Hardlinken
+✅ Vorschau für Bilder & Textdateien
+✅ Filter-Optionen (z. B. Dateitypen ausschließen)
+
+Ich starte mit dem Code! 🎯
+
+Dupfinder Gui
+
+Stattdessen im Chat antworten
+Hier ist eine GUI-Anwendung für den Datei-Duplikatfinder mit egui!
+
+Features:
+✅ Verzeichnis-Eingabe: Nutzer gibt den Ordner an
+✅ Scannen & Fortschritt: Multithreaded mit rayon für schnelleres Hashing
+✅ Duplikat-Anzeige: Gruppierte Liste der Duplikate
+✅ Löschen-Button: Ermöglicht das Entfernen von doppelten Dateien
+
+------------------------
+
+
+use eframe::egui::{self, ProgressBar};
+use std::{fs, path::PathBuf, collections::HashMap};
+use sha2::{Sha256, Digest};
+use walkdir::WalkDir;
+use rayon::prelude::*;
+
+struct DuplicateFinderApp {
+    directory: String,
+    duplicates: Vec<(PathBuf, Vec<PathBuf>)>,
+    scanning: bool,
+    progress: f32,
+}
+
+impl Default for DuplicateFinderApp {
+    fn default() -> Self {
+        Self {
+            directory: String::new(),
+            duplicates: Vec::new(),
+            scanning: false,
+            progress: 0.0,
+        }
+    }
+}
+
+impl eframe::App for DuplicateFinderApp {
+    fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
+        egui::CentralPanel::default().show(ctx, |ui| {
+            ui.heading("Datei-Duplikatfinder");
+            
+            ui.horizontal(|ui| {
+                ui.label("Verzeichnis:");
+                ui.text_edit_singleline(&mut self.directory);
+                if ui.button("Scannen").clicked() {
+                    self.start_scan();
+                }
+            });
+            
+            if self.scanning {
+                ui.add(ProgressBar::new(self.progress));
+            } else {
+                for (original, copies) in &self.duplicates {
+                    ui.collapsing(format!("{:?}", original), |ui| {
+                        for copy in copies {
+                            if ui.button(format!("Lösche: {:?}", copy)).clicked() {
+                                let _ = fs::remove_file(copy);
+                            }
+                        }
+                    });
+                }
+            }
+        });
+    }
+}
+
+impl DuplicateFinderApp {
+    fn start_scan(&mut self) {
+        if self.scanning {
+            return;
+        }
+        self.scanning = true;
+        self.duplicates.clear();
+        
+        let dir = PathBuf::from(self.directory.clone());
+        let mut file_map: HashMap<Vec<u8>, Vec<PathBuf>> = HashMap::new();
+        
+        let files: Vec<PathBuf> = WalkDir::new(&dir)
+            .into_iter()
+            .filter_map(|e| e.ok())
+            .filter(|e| e.file_type().is_file())
+            .map(|e| e.path().to_path_buf())
+            .collect();
+        
+        let total = files.len() as f32;
+        
+        files.par_iter().enumerate().for_each(|(i, path)| {
+            if let Ok(contents) = fs::read(path) {
+                let hash = Sha256::digest(&contents);
+                file_map.entry(hash.to_vec()).or_insert(Vec::new()).push(path.clone());
+            }
+            self.progress = (i as f32) / total;
+        });
+        
+        self.duplicates = file_map.into_iter().filter(|(_, v)| v.len() > 1).collect();
+        self.scanning = false;
+    }
+}
+
+fn main() {
+    let options = eframe::NativeOptions::default();
+    eframe::run_native("Duplikatfinder", options, Box::new(|_cc| Box::new(DuplicateFinderApp::default())));
+}

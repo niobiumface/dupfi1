@@ -1,66 +1,50 @@
 # DupFi - Duplicate File Finder
 
-DupFi ist ein leistungsstarker Duplikat-Finder mit einer benutzerfreundlichen grafischen Oberfläche, der Ihnen hilft, doppelte Dateien zu finden und zu verwalten.
+DupFi is a  duplicate finder with a graphical interface that helps you find and manage duplicate files.
 
 ## Features
 
-✅ **Benutzerfreundliche Oberfläche**
-- Integrierter Datei-Explorer zur Verzeichnisauswahl
-- Fortschrittsanzeige für große Scans
-- Übersichtliche Darstellung der Duplikate
+✅ **User-Friendly Interface**  
+- Integrated file explorer for directory selection  
+- Progress display for large scans  
+- Clear overview of duplicates  
 
-✅ **Leistungsstarke Duplikat-Erkennung**
-- Schnelle Erkennung durch SHA256-Hashing
-- Größenbasierte Vorfilterung für optimale Performance
-- Multithreading für schnelle Scans
+✅ **Duplicate Detection**  
+- Fast detection using SHA256 hashing  
+- Size-based pre-filtering for optimal performance  
+- Multithreading for fast scans  
 
-✅ **Flexible Verwaltungsoptionen**
-- Löschen von Duplikaten
-- Erstellen von Hardlinks zur Speicherplatzoptimierung
-- Verschieben von Dateien
-- Vorschau für Text- und Bilddateien
+✅ **Flexible Management Options**  
+- Delete duplicates  
+- Create hard links for storage optimization  
+- Move files  
+- Preview for text and image files  
 
-✅ **Filter-Optionen**
-- Ausschließen von Dateitypen
-- Anpassbare Filterregeln
+✅ **Filtering Options**  
+- Exclude specific file types  
+- Customizable filter rules  
 
 ## Installation
 
-1. Laden Sie die neueste Version von DupFi herunter
-2. Entpacken Sie die ZIP-Datei
-3. Starten Sie `dupfi.exe`
+1. Download the latest version of DupFi  
+2. Extract the ZIP file  
+3. Run `dupfi.exe`  
 
-## Verwendung
+## Usage
 
-1. Klicken Sie auf "📁 Select Directory" um ein Verzeichnis auszuwählen
-2. Optional: Fügen Sie Filter hinzu, um bestimmte Dateitypen auszuschließen
-3. Klicken Sie auf "🔍 Start Scan" um die Suche zu starten
-4. Verwalten Sie gefundene Duplikate mit den verfügbaren Optionen:
-   - 🗑️ Löschen
-   - 🔗 Hardlink erstellen
-   - 📦 Verschieben
+1. Click "📁 Select Directory" to choose a directory  
+2. (Optional) Add filters to exclude certain file types  
+3. Click "🔍 Start Scan" to begin the search  
+4. Manage found duplicates using the available options:  
+   - 🗑️ Delete  
+   - 🔗 Create Hard Link  
+   - 📦 Move  
 
-## Technische Details
+## Technical Details
 
-- Geschrieben in Rust
-- Verwendet egui für die Benutzeroberfläche
-- Multithreading mit rayon
-- Sichere Dateiverwaltung mit Fehlerbehandlung
+- Written in Rust  
+- Uses egui for the user interface  
+- Multithreading with rayon  
+- Secure file management with error handling  
 
 ## Build from Source
-
-```bash
-# Repository klonen
-git clone https://github.com/yourusername/dupfi.git
-cd dupfi
-
-# Release-Version bauen
-cargo build --release
-
-# Ausführen
-cargo run --release
-```
-
-## Lizenz
-
-MIT License
